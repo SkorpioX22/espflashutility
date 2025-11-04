@@ -13,9 +13,8 @@ Install the required Python packages:
 pip install esptool pyserial tk
 ```
 
-> **Disclaimer:** All chip support is controlled by the development and changes done in **esptool**. I do not own any of the Espressif trademarks or intellectual property. This project is simply a GUI application for flashing ESP devices.
-
 ## Supported Chips and Modules
+> **Disclaimer:** All chip support is controlled by the development and changes done in **esptool**. I do not own any of the Espressif trademarks or intellectual property. This project is simply a GUI application for flashing ESP devices.
 
 ### ESP32 Family Variants
 
