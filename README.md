@@ -5,10 +5,10 @@ Tool for onboard USB UART flashing of Espressif chipsets such as the ESP32, ESP8
 
 - **Python 3.10+**
 - **pip** package manager
-- ~~latest version of ESPtool: https://docs.espressif.com/projects/esptool/en/latest/esp32/installation.html~~
-  **(From version v1.1, a valid ESPTool installation will be checked when running the program and will guide the user through an automatic installation process if one is not found.)**
 
-Install the required Python packages:
+NOTE: **From version v1.1 a valid ESPTool installation will be checked when running the program and will guide the user through an automatic installation process if one is not found.**
+
+(MANUAL) Install the required Python packages:
 
 ```bash
 pip install esptool pyserial tk
