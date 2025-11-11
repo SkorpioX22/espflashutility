@@ -1,9 +1,10 @@
 """
-ESP Flash Utility (ESPtool GUI) — v1.0 Dark Edition
+ESP Flash Utility (ESPtool GUI) — v1.1 Dark Edition
 Author: SkorpioX22
 Repository: https://github.com/SkorpioX22/espflashutility
 
 A sleek dark GUI for flashing ESP chips using esptool with Python -m.
+Now includes auto-detection and installation for both esptool and pyserial.
 """
 
 import tkinter as tk
@@ -14,8 +15,9 @@ import serial.tools.list_ports
 import sys
 import os
 import webbrowser
+import importlib.util
 
-APP_TITLE = "ESP Flash Utility (ESPtool GUI) — v1.0"
+APP_TITLE = "ESP Flash Utility (ESPtool GUI) — v1.1"
 REPO_URL = "https://github.com/SkorpioX22/espflashutility"
 
 FONT = ("JetBrains Mono", 10)
@@ -83,6 +85,7 @@ class SlideStatusBar(ttk.Frame):
             self.place_bottom()
         start, end = self._y_hide, self._y_show
         step = (end - start) / 15
+
         def anim(i=0):
             y = int(start + step * i)
             self.place(y=y)
@@ -96,6 +99,7 @@ class SlideStatusBar(ttk.Frame):
     def _slide_out(self):
         start, end = self._y_show, self._y_hide
         step = (end - start) / 15
+
         def anim(i=0):
             y = int(start + step * i)
             self.place(y=y)
@@ -143,37 +147,29 @@ class ESPFlashUtility:
             row=2, column=0, columnspan=3, sticky="w", pady=(6, 10)
         )
 
-        ttk.Label(frame, text="Chip Type:").grid(row=3, column=0, sticky="w")
-        self.chip = ttk.Combobox(frame, values=[
-            "esp32", "esp32s2", "esp32s3", "esp32c2", "esp32c3",
-            "esp32c6", "esp32h2", "esp32p4", "esp8266"
-        ], width=30)
-        self.chip.set("esp32")
-        self.chip.grid(row=3, column=1, sticky="w")
-
-        ttk.Label(frame, text="Action:").grid(row=4, column=0, sticky="w", pady=(10, 0))
+        ttk.Label(frame, text="Action:").grid(row=3, column=0, sticky="w", pady=(10, 0))
         self.action = ttk.Combobox(frame, values=["Erase Flash", "Write Flash", "Get Chip Info"], width=30)
         self.action.current(0)
-        self.action.grid(row=4, column=1, sticky="w", pady=(10, 0))
+        self.action.grid(row=3, column=1, sticky="w", pady=(10, 0))
 
-        ttk.Label(frame, text="Firmware:").grid(row=5, column=0, sticky="w", pady=(10, 0))
+        ttk.Label(frame, text="Firmware:").grid(row=4, column=0, sticky="w", pady=(10, 0))
         self.file_lbl = ttk.Label(frame, text="No file selected")
-        self.file_lbl.grid(row=5, column=1, sticky="w")
-        ttk.Button(frame, text="Select .bin", command=self.select_file).grid(row=5, column=2, sticky="w", padx=5)
+        self.file_lbl.grid(row=4, column=1, sticky="w")
+        ttk.Button(frame, text="Select .bin", command=self.select_file).grid(row=4, column=2, sticky="w", padx=5)
 
-        ttk.Button(frame, text="Run Command", command=self.run).grid(row=6, column=0, sticky="w", pady=(14, 0))
-        ttk.Label(frame, text="v1.0", font=("JetBrains Mono", 9)).grid(row=6, column=1, sticky="w", pady=(14, 0))
+        ttk.Button(frame, text="Run Command", command=self.run).grid(row=5, column=0, sticky="w", pady=(14, 0))
+        ttk.Label(frame, text="v1.1", font=("JetBrains Mono", 9)).grid(row=5, column=1, sticky="w", pady=(14, 0))
 
-        ttk.Label(frame, text="Output:").grid(row=7, column=0, columnspan=3, sticky="w", pady=(10, 0))
+        ttk.Label(frame, text="Output:").grid(row=6, column=0, columnspan=3, sticky="w", pady=(10, 0))
         self.output = scrolledtext.ScrolledText(
             frame, font=("Consolas", 10), height=14,
             bg="#101010", fg=FG_COLOR, insertbackground=FG_COLOR, borderwidth=0
         )
-        self.output.grid(row=8, column=0, columnspan=3, sticky="nsew")
-        frame.rowconfigure(8, weight=1)
+        self.output.grid(row=7, column=0, columnspan=3, sticky="nsew")
+        frame.rowconfigure(7, weight=1)
 
         repo = ttk.Label(frame, text="Repository", foreground=ACCENT, cursor="hand2", font=("JetBrains Mono", 9, "underline"))
-        repo.grid(row=9, column=0, sticky="w", pady=(8, 0))
+        repo.grid(row=8, column=0, sticky="w", pady=(8, 0))
         repo.bind("<Button-1>", lambda e: webbrowser.open(REPO_URL))
 
         self.status = SlideStatusBar(root)
@@ -182,6 +178,57 @@ class ESPFlashUtility:
 
         self.bin_path = None
         self.refresh_ports()
+        self.check_requirements()
+
+    def check_requirements(self):
+        """Check if esptool and pyserial are installed; offer to install missing ones."""
+        missing = []
+        for pkg in ["esptool", "serial"]:
+            if importlib.util.find_spec(pkg) is None:
+                missing.append(pkg)
+
+        if not missing:
+            self.output.insert(tk.END, "✅ All dependencies found: esptool, pyserial\n\n")
+            self.status.show("All dependencies detected.", spin=False)
+            return True
+
+        missing_str = ", ".join(missing)
+        self.output.insert(tk.END, f"⚠️ Missing dependencies: {missing_str}\n")
+        self.status.show("Missing dependencies — install now?", spin=False)
+
+        confirm = tk.Toplevel(self.root)
+        confirm.title("Install Dependencies")
+        confirm.configure(bg=BG_COLOR)
+        confirm.geometry("340x160")
+        ttk.Label(confirm, text=f"The following packages are missing:\n{missing_str}\n\nInstall now?",
+                  background=BG_COLOR, foreground=FG_COLOR, font=FONT, anchor="center", justify="center").pack(expand=True)
+        btn_frame = ttk.Frame(confirm)
+        btn_frame.pack(pady=10)
+        ttk.Button(btn_frame, text="Install", command=lambda: [confirm.destroy(), self.install_packages(missing)]).grid(row=0, column=0, padx=10)
+        ttk.Button(btn_frame, text="Cancel", command=confirm.destroy).grid(row=0, column=1, padx=10)
+        confirm.grab_set()
+        return False
+
+    def install_packages(self, packages):
+        """Automatically install required packages via pip."""
+        self.status.show("Installing missing packages...", spin=True)
+        self.output.insert(tk.END, f"Installing: {', '.join(packages)}...\n\n")
+        self.output.see(tk.END)
+
+        def task():
+            cmd = [sys.executable, "-m", "pip", "install", "--upgrade"] + packages
+            proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+            for line in proc.stdout:
+                self._append(line)
+            proc.wait()
+            if proc.returncode == 0:
+                self.status.show("Dependencies installed successfully.", spin=False)
+                self.output.insert(tk.END, "\n✅ Installation completed.\n\n")
+            else:
+                self.status.show("Failed to install dependencies.", spin=False)
+                self.output.insert(tk.END, "\n❌ Installation failed.\n\n")
+
+        threading.Thread(target=task, daemon=True).start()
 
     def refresh_ports(self):
         ports = [p.device for p in serial.tools.list_ports.comports()]
@@ -201,24 +248,26 @@ class ESPFlashUtility:
             self.status.show(f"Selected {os.path.basename(path)}", spin=False)
 
     def run(self):
+        if not self.check_requirements():
+            return
+
         port = self.port.get().strip()
         if not port:
             self.status.show("Select a COM port.", spin=False)
             return
 
-        chip = self.chip.get().strip()
         action = self.action.get()
-
         cmd = [sys.executable, "-m", "esptool", "--port", port]
+
         if action == "Erase Flash":
-            cmd += ["--chip", chip, "erase_flash"]
+            cmd += ["erase_flash"]
         elif action == "Write Flash":
             if not self.bin_path or not os.path.isfile(self.bin_path):
                 self.status.show("Select a valid .bin file.", spin=False)
                 return
-            cmd += ["--chip", chip, "write_flash", "-z", "0x1000", self.bin_path]
+            cmd += ["write_flash", "-z", "0x1000", self.bin_path]
         else:
-            cmd += ["--chip", chip, "chip_id"]
+            cmd += ["chip_id"]
 
         self.output.delete("1.0", tk.END)
         self.status.show("Running command...", spin=True)
