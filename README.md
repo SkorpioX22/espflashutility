@@ -1,6 +1,8 @@
 # espflashutility
 GUI tool for onboard USB UART flashing of Espressif chipsets such as the ESP32, ESP8266, and their variants. Flashing is done via esptool.
 
+IMPORTANT: Please make sure you have the correct drivers for the USB-UART bridge chip on your ESP devboard BEFORE using this tool.
+
 ## Requirements
 
 - **Python 3.10+**
