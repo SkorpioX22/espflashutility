@@ -3,7 +3,7 @@ GUI tool for onboard USB UART flashing of Espressif chipsets such as the ESP32, 
 
 IMPORTANT: Please make sure you have the correct drivers for the USB-UART bridge chip on your ESP devboard BEFORE using this tool.
 
-Common USB Bridge drivers. (Double check with your module.)
+Below are some common USB Bridge drivers for ESP32/8266 devboards: (Double check with your module.)
 
 - **CP210x (Silicon Labs)**  
   https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers
