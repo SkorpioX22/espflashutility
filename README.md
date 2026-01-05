@@ -21,6 +21,8 @@ Other modules may still be supported. Please experiment!
 > **Disclaimer:** All chip support is controlled by the development and changes made in esptool. I do not own any of the Espressif trademarks or intellectual property. This project is simply a GUI application designed to make flashing ESP devices easier.
 >
 > Please note that all boards and modules **(including clones and third-party variants)** may behave differently, and true compatibility or support is not guaranteed. Hardware variations, boot modes, and manufacturing differences can affect flashing results.
+>
+> Before making any report about incompatibility or malfunctioning flash functions, please double check that the USB port and cable being used is clean, workinng, and free of corrosion. If you are in doubt, use another port/USB Cable.
 
 ### ESP32 Family Variants
 
