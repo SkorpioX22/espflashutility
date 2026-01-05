@@ -3,6 +3,23 @@ GUI tool for onboard USB UART flashing of Espressif chipsets such as the ESP32, 
 
 IMPORTANT: Please make sure you have the correct drivers for the USB-UART bridge chip on your ESP devboard BEFORE using this tool.
 
+Common USB Bridge drivers. (Double check with your module.)
+
+- **CP210x (Silicon Labs)**  
+  https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers
+
+- **CH340 / CH341 (WCH)**  
+  https://www.wch.cn/downloads/CH341SER_EXE.html
+
+- **CH9102 / CH9102F (WCH)**  
+  https://www.wch.cn/downloads/CH9102_Driver.html
+
+- **FT232RL / FT231X (FTDI)**  
+  https://ftdichip.com/drivers/vcp-drivers/
+
+- **PL2303 (Prolific)**  
+  https://www.prolific.com.tw/US/ShowProduct.aspx?p_id=225&pcid=41
+
 ## Requirements
 
 - **Python 3.10+**
