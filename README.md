@@ -1,20 +1,45 @@
 # espflashutility
-Tool for onboard USB UART flashing of Espressif chipsets such as the ESP32, ESP8266, and their variants. Flashing is done via esptool.
+GUI tool for onboard USB UART flashing of Espressif chipsets such as the ESP32, ESP8266, and their variants. Flashing is done via esptool.
+
+IMPORTANT: Please make sure you have the correct drivers for the USB-UART bridge chip on your ESP devboard BEFORE using this tool.
+
+Below are some common USB Bridge drivers for ESP32/8266 devboards: (Double check with your module.)
+
+- **CP210x (Silicon Labs)**  
+  https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers
+
+- **CH340 / CH341 (WCH)**  
+  https://www.wch.cn/downloads/CH341SER_EXE.html
+
+- **CH9102 / CH9102F (WCH)**  
+  https://www.wch.cn/downloads/CH9102_Driver.html
+
+- **FT232RL / FT231X (FTDI)**  
+  https://ftdichip.com/drivers/vcp-drivers/
+
+- **PL2303 (Prolific)**  
+  https://www.prolific.com.tw/US/ShowProduct.aspx?p_id=225&pcid=41
 
 ## Requirements
 
 - **Python 3.10+**
 - **pip** package manager
-- **latest version of ESPtool: https://docs.espressif.com/projects/esptool/en/latest/esp32/installation.html**
 
-Install the required Python packages:
+> **From version v1.1, a valid ESPTool installation will be checked when running the program and will guide the user through an automatic installation process if one is not found.**
+
+(MANUAL) Install the required Python packages:
 
 ```bash
 pip install esptool pyserial tk
 ```
 
-## Supported Chips and Modules
-> **Disclaimer:** All chip support is controlled by the development and changes done in **esptool**. I do not own any of the Espressif trademarks or intellectual property. This project is simply a GUI application for flashing ESP devices.
+## Supported Chips and Modules 
+Other modules may still be supported. Please experiment!
+> **Disclaimer:** All chip support is controlled by the development and changes made in esptool. I do not own any of the Espressif trademarks or intellectual property. This project is simply a GUI application designed to make flashing ESP devices easier.
+>
+> Please note that all boards and modules **(including clones and third-party variants)** may behave differently, and true compatibility or support is not guaranteed. Hardware variations, boot modes, and manufacturing differences can affect flashing results.
+>
+> Before making any report about incompatibility or malfunctioning flash functions, please double check that the USB port and cable being used is clean, workinng, and free of corrosion. If you are in doubt, use another port/USB Cable.
 
 ### ESP32 Family Variants
 
